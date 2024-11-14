@@ -2,7 +2,7 @@ import startGame from "./game/game.js";
 import { setupGameState } from "./game/state.js";
 
 /** @type {HTMLCanvasElement} */
-const canvas = document.getElementById('game');
+const canvas = document.getElementById("game");
 
 /** @type {Options} */
 const options = {
