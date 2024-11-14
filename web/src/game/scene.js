@@ -65,8 +65,8 @@ export default class Scene {
     setSceneTitle(context, title, x, y) {
         assert(typeof x === "number", "Invalid type for x provided", {"x": x});
         assert(typeof y === "number", "Invalid type for y provided", {"y": y});
-        assert(this.sceneWidth >= x, "Provided value for x is out of bounds", {"x": x});
-        assert(this.sceneHeight >= y, "Provided value for y is out of bounds", {"y": y});
+        assert(this.sceneWidth >= x || x < 0, "Provided value for x is out of bounds", {"x": x});
+        assert(this.sceneHeight >= y || x < 0, "Provided value for y is out of bounds", {"y": y});
 
         context.font = "42px Jungle Adventurer";
         context.textAlign = "center";
