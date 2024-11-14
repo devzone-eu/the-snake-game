@@ -68,7 +68,7 @@ export default class Scene {
         assert(this.sceneWidth >= x || x < 0, "Provided value for x is out of bounds", {"x": x});
         assert(this.sceneHeight >= y || x < 0, "Provided value for y is out of bounds", {"y": y});
 
-        context.font = "42px Jungle Adventurer";
+        context.font = "3em Jungle Adventurer";
         context.textAlign = "center";
         context.fillStyle = "#afafaf";
         context.fillText(title, x, y);

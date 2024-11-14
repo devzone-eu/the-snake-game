@@ -15,7 +15,7 @@ export default class Home extends Scene {
         this.resetDrawingContext(context);
         this.setSceneTitle(context, "Main Menu", this.sceneWidth / 2, 50);
 
-        context.font = "30px Jungle Adventurer";
+        context.font = "2em Jungle Adventurer";
         context.textAlign = "center";
         context.fillStyle = "#afafaf";
 
