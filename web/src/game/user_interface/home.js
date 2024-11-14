@@ -2,10 +2,14 @@ import Scene from "../scene.js";
 
 export default class Home extends Scene {
 
+    /** @type {string | null} */
+    _activeMenuItem = null
+
     /**
-     * @param {HTMLCanvasElement} canvas 
+     * @param {HTMLCanvasElement} canvas
+     * @param {State} state
      */
-    drawUserInterface(canvas) {
+    drawUserInterface(canvas, state) {
         const context = canvas.getContext("2d");
 
         this.resetDrawingContext(context);
@@ -15,23 +19,25 @@ export default class Home extends Scene {
         context.textAlign = "center";
         context.fillStyle = "#afafaf";
 
-        // TODO: Obtain menu items from configuration instead. 
-        // Exclude the active screen scene.
-        // Calculate index which we use to control where the text appear on "y".
-        let index = 1;
-        for (const item of ["New Game", "Multiplayer", "Settings"]) {
-            // TODO: Alternate colors based on selection done via arrow keys.
-            const fillColor = "#666";
+        state.scenes.forEach((scene, k) => {
+            if (!scene.dedicated) {
+                return;
+            }
 
-            context.fillStyle = fillColor;
-            context.fillText(item, this.sceneWidth / 2, 150 + (index++) * 50);
-        }
+            if (this._activeMenuItem === null) {
+                this._activeMenuItem = scene.getKey();
+            }
+
+            context.fillStyle = scene.getKey() === this._activeMenuItem ? "#FFF" : "#666";
+            context.fillText(scene.getTitle(), this.sceneWidth / 2, 150 + k * 50);
+        });
     }
 
     /**
-     * @param {HTMLCanvasElement} canvas 
+     * @param {HTMLCanvasElement} canvas
+     * @param {State} state
      */
-    attachEventListeners(canvas) {
+    attachEventListeners(canvas, state) {
 
     }
 

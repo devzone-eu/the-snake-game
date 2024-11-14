@@ -10,5 +10,5 @@ export default function startGame(canvas, state) {
 
     activeScene.setSceneWidth(state.options.sceneWidth);
     activeScene.setSceneHeight(state.options.sceneHeight);
-    activeScene.drawUserInterface(canvas);
+    activeScene.drawUserInterface(canvas, state);
 }
