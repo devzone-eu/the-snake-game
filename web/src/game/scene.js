@@ -49,6 +49,20 @@ export default class Scene {
     }
 
     /**
+     * @param {HTMLCanvasElement} canvas
+     * @param {State} state
+     */
+    drawUserInterface(canvas, state) {
+    }
+
+    /**
+     * @param {HTMLCanvasElement} canvas
+     * @param {State} state
+     */
+    attachEventListeners(canvas, state) {
+    }
+
+    /**
      * @param {CanvasRenderingContext2D} context
      */
     resetDrawingContext(context) {

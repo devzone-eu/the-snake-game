@@ -1,5 +1,6 @@
 import Scene from "../scene.js";
 import { DoubleCircularLinkedList } from "../../data_structure/linked_list.js";
+import eventBus from "../../event/event_bus.js";
 
 export default class Home extends Scene {
 
@@ -16,9 +17,7 @@ export default class Home extends Scene {
     drawUserInterface(canvas, state) {
         const context = canvas.getContext("2d");
 
-        this.resetDrawingContext(context);
         this.setSceneTitle(context, "Main Menu", this.sceneWidth / 2, 50);
-
         this._setupListItems(state.scenes);
         this._drawUserMenu(state.scenes, context);
     }
@@ -45,6 +44,11 @@ export default class Home extends Scene {
                     this.resetDrawingContext(context);
                     this.setSceneTitle(context, "Main Menu", this.sceneWidth / 2, 50);
                     this._drawUserMenu(state.scenes, context);
+
+                    break;
+
+                case "Enter":
+                    eventBus.publish("activeSceneChanged", this._linkedList.active(), state, canvas);
 
                     break;
             }

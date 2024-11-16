@@ -47,6 +47,10 @@ export class DoubleCircularLinkedList {
         this.current = this.head;
     }
 
+    active() {
+        return this.current.value;
+    }
+
     next() {
         assert(this.current !== null, "The current list is still empty. Call `start()` after specifying the list items.");
 
