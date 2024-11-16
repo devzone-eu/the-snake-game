@@ -20,7 +20,7 @@ declare global {
         setCanvasHeight(height: number): void,
         drawUserInterface(canvas: HTMLCanvasElement, state: State): void,
         attachEventListeners(canvas: HTMLCanvasElement, state: State): void,
-        resetDrawingContext(context: CanvasRenderingContext2D): void,
+        resetDrawingContext(context: CanvasRenderingContext2D, x: number, y: number): void,
         setSceneTitle(context: CanvasRenderingContext2D, title: string, x: number, y: number): void,
     }
 

@@ -64,9 +64,11 @@ export default class Scene {
 
     /**
      * @param {CanvasRenderingContext2D} context
+     * @param {number} x
+     * @param {number} y
      */
-    resetDrawingContext(context) {
-        context.clearRect(0, 0, this.sceneWidth, this.sceneHeight);
+    resetDrawingContext(context, x = 0, y = 0) {
+        context.clearRect(x, y, this.sceneWidth, this.sceneHeight);
         context.imageSmoothingEnabled = false;
     }
 

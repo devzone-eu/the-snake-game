@@ -35,16 +35,14 @@ export default class Home extends Scene {
             switch (e.key) {
                 case "ArrowUp":
                     this._activeMenuItem = this._linkedList.previous().getKey();
-                    this.resetDrawingContext(context);
-                    this.setSceneTitle(context, "Main Menu", this.sceneWidth / 2, 50);
+                    this.resetDrawingContext(context, 0, 50);
                     this._drawUserMenu(state.scenes, context);
 
                     break;
 
                 case "ArrowDown":
                     this._activeMenuItem = this._linkedList.next().getKey();
-                    this.resetDrawingContext(context);
-                    this.setSceneTitle(context, "Main Menu", this.sceneWidth / 2, 50);
+                    this.resetDrawingContext(context, 0, 50);
                     this._drawUserMenu(state.scenes, context);
 
                     break;
