@@ -8,12 +8,16 @@ declare global {
     }
 
     type Scene = {
+        sceneWidth: number,
+        sceneHeight: number,
+        title: string,
+        key: string,
         dedicated: boolean,
 
         getTitle(): string,
         getKey(): string,
-        setSceneWidth(width: number): void,
-        setSceneHeight(height: number): void,
+        setCanvasWidth(width: number): void,
+        setCanvasHeight(height: number): void,
         drawUserInterface(canvas: HTMLCanvasElement, state: State): void,
         attachEventListeners(canvas: HTMLCanvasElement, state: State): void,
         resetDrawingContext(context: CanvasRenderingContext2D): void,

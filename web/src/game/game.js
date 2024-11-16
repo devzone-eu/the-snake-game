@@ -1,3 +1,6 @@
+import { assert } from "../helper/assert.js";
+import Scene from "./scene.js";
+
 /**
  * @param {HTMLCanvasElement} canvas 
  * @param {State} state 
@@ -8,7 +11,9 @@ export default function startGame(canvas, state) {
 
     const activeScene = state.getActiveScene();
 
-    activeScene.setSceneWidth(state.options.sceneWidth);
-    activeScene.setSceneHeight(state.options.sceneHeight);
+    assert(activeScene instanceof Scene, "Invalid type for active scene provided");
+
+    activeScene.setCanvasWidth(state.options.sceneWidth);
+    activeScene.setCanvasHeight(state.options.sceneHeight);
     activeScene.drawUserInterface(canvas, state);
 }

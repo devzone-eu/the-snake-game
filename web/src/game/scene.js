@@ -33,7 +33,7 @@ export default class Scene {
     /**
      * @param {number} width 
      */
-    setSceneWidth(width) {
+    setCanvasWidth(width) {
         assert(typeof width === "number", "Invalid type for width provided", {"width": width});
 
         this.sceneWidth = width;
@@ -42,7 +42,7 @@ export default class Scene {
     /**
      * @param {number} height 
      */
-    setSceneHeight(height) {
+    setCanvasHeight(height) {
         assert(typeof height === "number", "Invalid type for height provided", {"height": height});
 
         this.sceneHeight = height;
