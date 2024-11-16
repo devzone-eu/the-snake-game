@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'Jungle Adventurer';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Jungle Adventurer'), url('../fonts/JungleAdventurer.ttf') format('truetype');
+    font-display: swap;
+}
+
 body {
     margin: 0;
     display: flex;
@@ -13,6 +21,8 @@ canvas {
     height: 100%;
     background-color: #ffaa75;
     outline: none;
+    border: 1px solid #afafaf;
+    font-family: 'Jungle Adventurer', serif;
 }
 
 .container {
@@ -25,7 +35,7 @@ canvas {
 }
 
 body.dark .container {
-    box-shadow: 0px 4px 12px rgba(255, 255, 255, 0.1);
+    box-shadow: 0px 4px 12px rgba(255, 255, 255, 0.3);
 }
 
 body.dark {
