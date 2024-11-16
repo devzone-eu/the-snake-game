@@ -48,6 +48,10 @@ export default class Home extends Scene {
                     break;
 
                 case "Enter":
+                    // @TODO: The entire callback should probably be moved to a variable,
+                    // since I have to figure out a way to remove the registered event
+                    // once the scene is changed. Each scene should provide it's own event listeners
+                    // and it's their responsibility to detach them once new scene is about to be rendered.
                     eventBus.publish("activeSceneChanged", this._linkedList.active(), state, canvas);
 
                     break;

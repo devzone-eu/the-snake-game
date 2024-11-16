@@ -12,6 +12,8 @@ eventBus.subscribe("activeSceneChanged", /**
     assert(state instanceof Object, "Incorrect type for state specified", typeof state);
     assert(canvas instanceof HTMLCanvasElement, "Incorrect type for canvas specified", typeof canvas);
 
+    state.activeScene = activeScene.getKey();
+
     activeScene.setCanvasWidth(state.options.sceneWidth);
     activeScene.setCanvasHeight(state.options.sceneHeight);
     activeScene.resetDrawingContext(canvas.getContext("2d"));
