@@ -10,6 +10,9 @@ export default class Home extends Scene {
     /** @type {DoubleCircularLinkedList | null} */
     _linkedList = null
 
+    /** @type {function(KeyboardEvent): void} */
+    _keydownListener = null
+
     /**
      * @param {HTMLCanvasElement} canvas
      * @param {State} state
@@ -28,8 +31,7 @@ export default class Home extends Scene {
      */
     attachEventListeners(canvas, state) {
         const context = canvas.getContext("2d");
-
-        window.addEventListener("keydown", (e) => {
+        this._keydownListener = (e) => {
             switch (e.key) {
                 case "ArrowUp":
                     this._activeMenuItem = this._linkedList.previous().getKey();
@@ -48,15 +50,21 @@ export default class Home extends Scene {
                     break;
 
                 case "Enter":
-                    // @TODO: The entire callback should probably be moved to a variable,
-                    // since I have to figure out a way to remove the registered event
-                    // once the scene is changed. Each scene should provide it's own event listeners
-                    // and it's their responsibility to detach them once new scene is about to be rendered.
+                    this._detachEventListeners();
                     eventBus.publish("activeSceneChanged", this._linkedList.active(), state, canvas);
 
                     break;
             }
-        });
+        };
+
+        window.addEventListener("keydown", this._keydownListener);
+    }
+
+    _detachEventListeners() {
+        if (this._keydownListener !== null) {
+            window.removeEventListener("keydown", this._keydownListener);
+            this._keydownListener = null;
+        }
     }
 
     /**
