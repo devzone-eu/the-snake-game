@@ -4,6 +4,11 @@ import { Vector } from "../math.js";
 import eventBus from "../../event/event_bus.js";
 import Direction from "../../helper/direction.js";
 
+const DIRECTION_UP = "up";
+const DIRECTION_DOWN = "down";
+const DIRECTION_LEFT = "left";
+const DIRECTION_RIGHT = "right";
+
 export default class NewGame extends Scene {
 
     /** @type {function(KeyboardEvent): void} */
@@ -36,10 +41,17 @@ export default class NewGame extends Scene {
      */
     attachEventListeners(canvas, state) {
         const directionsMapping = {
-            "ArrowUp":      new Direction(0, -state.options.blockSize, "up"),
-            "ArrowDown":    new Direction(0, state.options.blockSize, "down"),
-            "ArrowLeft":    new Direction(-state.options.blockSize, 0, "left"),
-            "ArrowRight":   new Direction(state.options.blockSize, 0, "right"),
+            "ArrowUp":      new Direction(0, -state.options.blockSize, DIRECTION_UP),
+            "ArrowDown":    new Direction(0, state.options.blockSize, DIRECTION_DOWN),
+            "ArrowLeft":    new Direction(-state.options.blockSize, 0, DIRECTION_LEFT),
+            "ArrowRight":   new Direction(state.options.blockSize, 0, DIRECTION_RIGHT),
+        };
+
+        const oppositeDirections = {
+            [DIRECTION_UP]: DIRECTION_DOWN,
+            [DIRECTION_DOWN]: DIRECTION_UP,
+            [DIRECTION_LEFT]: DIRECTION_RIGHT,
+            [DIRECTION_RIGHT]: DIRECTION_LEFT,
         };
 
         const context = canvas.getContext("2d");
@@ -48,6 +60,10 @@ export default class NewGame extends Scene {
             if (directionsMapping.hasOwnProperty(e.key)) {
                 /** @type Direction */
                 let direction = directionsMapping[e.key];
+
+                if (state.currentDirection === oppositeDirections[direction.getDirection()]) {
+                    return;
+                }
 
                 this._move(direction, context, state);
             }
@@ -83,14 +99,6 @@ export default class NewGame extends Scene {
         let head = state.snakePosition[0];
 
         assert(head instanceof Vector, "Invalid type provided for snake head position", {"head": head});
-
-        if (state.currentDirection === "left" && direction.getDirection() === "right") {
-            return;
-        }
-
-        if (state.currentDirection === "right" && direction.getDirection() === "left") {
-            return;
-        }
 
         let position = this._calculateCoordinatesForBoundaries(
             head,
