@@ -11,4 +11,29 @@ export class Vector {
         this.y = y;
     }
 
+    /**
+     * @param {Vector} vector
+     * @returns {Vector}
+     */
+    copy(vector) {
+        return new Vector(
+            this.x + vector.getX(),
+            this.y + vector.getY()
+        );
+    }
+
+    /**
+     * @returns {Number}
+     */
+    getX() {
+        return this.x;
+    }
+
+    /**
+     * @returns {Number}
+     */
+    getY() {
+        return this.y;
+    }
+
 }

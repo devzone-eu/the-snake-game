@@ -1,3 +1,5 @@
+import { Vector } from "./src/game/math.js";
+
 export {};
 
 declare global {
@@ -5,6 +7,7 @@ declare global {
         sceneWidth: number,
         sceneHeight: number,
         blockSize: number,
+        snakeInitialSize: number,
     }
 
     type Scene = {
@@ -28,6 +31,8 @@ declare global {
         options: Options,
         scenes: Array<Scene>,
         activeScene: string,
+        currentDirection: string,
+        snakePosition: Array<Vector> | null,
 
         getActiveScene(): Scene,
     }

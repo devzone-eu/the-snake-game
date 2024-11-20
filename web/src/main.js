@@ -8,7 +8,8 @@ const canvas = document.getElementById("game");
 const options = {
     sceneWidth: canvas.width,
     sceneHeight: canvas.height,
-    blockSize: 24,
+    blockSize: 20,
+    snakeInitialSize: 4,
 };
 
 /** @type {State} */
