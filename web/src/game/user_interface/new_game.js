@@ -14,6 +14,9 @@ export default class NewGame extends Scene {
     /** @type {function(KeyboardEvent): void} */
     _keydownListener = null
 
+    /** @type {Vector | null} */
+    _appleCoordinates = null
+
     /**
      * @param {HTMLCanvasElement} canvas
      * @param {State} state
@@ -24,6 +27,7 @@ export default class NewGame extends Scene {
 
         const context = canvas.getContext("2d");
         this._drawSnake(context, state);
+        this._drawApple(context, state.options);
 
         eventBus.subscribe("positionChanged", /**
             @param {CanvasRenderingContext2D} context
@@ -31,6 +35,7 @@ export default class NewGame extends Scene {
             */
             (context, state) => {
                 this._drawSnake(context, state);
+                this._drawApple(context, state.options);
             }
         );
     }
@@ -87,6 +92,42 @@ export default class NewGame extends Scene {
             context.fill();
             context.closePath();
         }
+    }
+
+    /**
+     * @param {CanvasRenderingContext2D} context
+     * @param {Options} options
+     * @private
+     */
+    _drawApple(context, options) {
+        const calculateCoordinates = function (/** @type {Options} */options, /** @type {Number} */ radius) {
+            if (this._appleCoordinates !== null) {
+                return this._appleCoordinates;
+            }
+
+            const endX = options.sceneWidth - options.blockSize;
+            const endY = options.sceneHeight - options.blockSize;
+
+            const randomX = Math.floor(Math.random() * endX);
+            const randomY = Math.floor(Math.random() * endY);
+
+            const arcX = Math.max(radius, Math.min(options.sceneWidth - radius, randomX));
+            const arcY = Math.max(radius, Math.min(options.sceneHeight - radius, randomY));
+
+            this._appleCoordinates = new Vector(arcX, arcY);
+
+            return this._appleCoordinates;
+        }.bind(this);
+
+        const radius = 10;
+        /** @type {Vector} */
+        const appleCoordinates = calculateCoordinates(options, radius);
+
+        context.beginPath();
+        context.fillStyle = "#c31c1c";
+        context.arc(appleCoordinates.getX(), appleCoordinates.getY(), radius, 0, Math.PI * 2);
+        context.fill();
+        context.closePath();
     }
 
     /**
