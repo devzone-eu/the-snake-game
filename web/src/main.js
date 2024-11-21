@@ -15,6 +15,10 @@ const options = {
         snakeHead: "#227518",
         snakeBody: "#185508",
     },
+    startPosition: {
+        x: 360,
+        y: 200,
+    },
 };
 
 /** @type {State} */

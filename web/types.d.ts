@@ -12,7 +12,11 @@ declare global {
             apple: string,
             snakeBody: string,
             snakeHead: string,
-        }
+        },
+        startPosition: {
+            x: number,
+            y: number,
+        },
     }
 
     type Scene = {

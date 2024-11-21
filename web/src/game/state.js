@@ -11,11 +11,10 @@ import { Vector } from "./math.js";
 export function setupGameState(options) {
     /** @type Array<Vector> */
     const snakePosition = [];
-    let headStartAtX = 360;
-    let headStartAtY = 200;
+    let headStartAtX = options.startPosition.x;
 
     for (let i = 0; i < options.snakeInitialSize; i++) {
-        snakePosition.push(new Vector(headStartAtX - options.blockSize,  headStartAtY));
+        snakePosition.push(new Vector(headStartAtX - options.blockSize,  options.startPosition.y));
 
         headStartAtX -= options.blockSize;
     }
