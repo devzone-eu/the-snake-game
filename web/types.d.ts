@@ -8,6 +8,11 @@ declare global {
         sceneHeight: number,
         blockSize: number,
         snakeInitialSize: number,
+        colors: {
+            apple: string,
+            snakeBody: string,
+            snakeHead: string,
+        }
     }
 
     type Scene = {

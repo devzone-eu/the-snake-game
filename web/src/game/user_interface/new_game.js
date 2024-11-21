@@ -87,7 +87,7 @@ export default class NewGame extends Scene {
 
         for (let [index, vector] of state.snakePosition.entries()) {
             context.beginPath();
-            context.fillStyle = index === 0 ? "#777" : "#555";
+            context.fillStyle = index === 0 ? state.options.colors.snakeHead : state.options.colors.snakeBody;
             context.rect(vector.getX(), vector.getY(), state.options.blockSize, state.options.blockSize);
             context.fill();
             context.closePath();
@@ -105,26 +105,23 @@ export default class NewGame extends Scene {
                 return this._appleCoordinates;
             }
 
-            const endX = options.sceneWidth - options.blockSize;
-            const endY = options.sceneHeight - options.blockSize;
+            const randomX = Math.floor(Math.random() * (options.sceneWidth / options.blockSize));
+            const randomY = Math.floor(Math.random() * (options.sceneHeight / options.blockSize));
 
-            const randomX = Math.floor(Math.random() * endX);
-            const randomY = Math.floor(Math.random() * endY);
-
-            const arcX = Math.max(radius, Math.min(options.sceneWidth - radius, randomX));
-            const arcY = Math.max(radius, Math.min(options.sceneHeight - radius, randomY));
+            const arcX = randomX * options.blockSize + options.blockSize / 2;
+            const arcY = randomY * options.blockSize + options.blockSize / 2;
 
             this._appleCoordinates = new Vector(arcX, arcY);
 
             return this._appleCoordinates;
         }.bind(this);
 
-        const radius = 10;
+        const radius = options.blockSize / 2 - 2;
         /** @type {Vector} */
         const appleCoordinates = calculateCoordinates(options, radius);
 
         context.beginPath();
-        context.fillStyle = "#c31c1c";
+        context.fillStyle = options.colors.apple;
         context.arc(appleCoordinates.getX(), appleCoordinates.getY(), radius, 0, Math.PI * 2);
         context.fill();
         context.closePath();

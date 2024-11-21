@@ -10,6 +10,11 @@ const options = {
     sceneHeight: canvas.height,
     blockSize: 20,
     snakeInitialSize: 4,
+    colors: {
+        apple: "#c31c1c",
+        snakeHead: "#227518",
+        snakeBody: "#185508",
+    },
 };
 
 /** @type {State} */
