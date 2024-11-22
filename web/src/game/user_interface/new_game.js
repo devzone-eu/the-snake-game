@@ -102,26 +102,16 @@ export default class NewGame extends Scene {
      * @private
      */
     _drawApple(context, options) {
-        const calculateCoordinates = function (/** @type {Options} */options, /** @type {Number} */ radius) {
-            if (this._appleCoordinates !== null) {
-                return this._appleCoordinates;
-            }
-
+        if (this._appleCoordinates === null) {
             const randomX = Math.floor(Math.random() * (options.sceneWidth / options.blockSize)) * options.blockSize;
             const randomY = Math.floor(Math.random() * (options.sceneHeight / options.blockSize)) * options.blockSize;
 
             this._appleCoordinates = new Vector(randomX, randomY);
-
-            return this._appleCoordinates;
-        }.bind(this);
-
-        const radius = options.blockSize / 2 - 2;
-        /** @type {Vector} */
-        const appleCoordinates = calculateCoordinates(options, radius);
+        }
 
         context.beginPath();
         context.fillStyle = options.colors.apple;
-        context.rect(appleCoordinates.getX(), appleCoordinates.getY(), options.blockSize, options.blockSize);
+        context.rect(this._appleCoordinates.getX(), this._appleCoordinates.getY(), options.blockSize, options.blockSize);
         context.fill();
         context.closePath();
     }
