@@ -28,6 +28,7 @@ export default class NewGame extends Scene {
         const context = canvas.getContext("2d");
         this._drawSnake(context, state);
         this._drawApple(context, state.options);
+        this._drawDebugGrid(context, state);
 
         eventBus.subscribe("positionChanged", /**
             @param {CanvasRenderingContext2D} context
@@ -36,6 +37,7 @@ export default class NewGame extends Scene {
             (context, state) => {
                 this._drawSnake(context, state);
                 this._drawApple(context, state.options);
+                this._drawDebugGrid(context, state);
             }
         );
     }
@@ -105,13 +107,10 @@ export default class NewGame extends Scene {
                 return this._appleCoordinates;
             }
 
-            const randomX = Math.floor(Math.random() * (options.sceneWidth / options.blockSize));
-            const randomY = Math.floor(Math.random() * (options.sceneHeight / options.blockSize));
+            const randomX = Math.floor(Math.random() * (options.sceneWidth / options.blockSize)) * options.blockSize;
+            const randomY = Math.floor(Math.random() * (options.sceneHeight / options.blockSize)) * options.blockSize;
 
-            const arcX = randomX * options.blockSize + options.blockSize / 2;
-            const arcY = randomY * options.blockSize + options.blockSize / 2;
-
-            this._appleCoordinates = new Vector(arcX, arcY);
+            this._appleCoordinates = new Vector(randomX, randomY);
 
             return this._appleCoordinates;
         }.bind(this);
@@ -122,7 +121,7 @@ export default class NewGame extends Scene {
 
         context.beginPath();
         context.fillStyle = options.colors.apple;
-        context.arc(appleCoordinates.getX(), appleCoordinates.getY(), radius, 0, Math.PI * 2);
+        context.rect(appleCoordinates.getX(), appleCoordinates.getY(), options.blockSize, options.blockSize);
         context.fill();
         context.closePath();
     }
@@ -138,6 +137,8 @@ export default class NewGame extends Scene {
 
         assert(head instanceof Vector, "Invalid type provided for snake head position", {"head": head});
 
+        state.currentDirection = direction.getDirection();
+
         let position = this._calculateCoordinatesForBoundaries(
             head,
             direction,
@@ -147,8 +148,12 @@ export default class NewGame extends Scene {
         );
 
         state.snakePosition.unshift(position);
-        state.snakePosition.pop();
-        state.currentDirection = direction.getDirection();
+
+        if (position.getX() === this._appleCoordinates.getX() && position.getY() === this._appleCoordinates.getY()) {
+            this._appleCoordinates = null;
+        } else {
+            state.snakePosition.pop();
+        }
 
         eventBus.publish("positionChanged", context, state);
     }
@@ -179,6 +184,37 @@ export default class NewGame extends Scene {
         }
 
         return new Vector(nextX, nextY);
+    }
+
+    /**
+     * @param {CanvasRenderingContext2D} context
+     * @param {State} state
+     * @private
+     */
+    _drawDebugGrid(context, state) {
+        if (state.options.debug === false)  {
+            return;
+        }
+
+        context.save();
+        context.strokeStyle = "#afafaf";
+        context.lineWidth = 0.5;
+
+        for (let x = 0; x <= state.options.sceneWidth; x += state.options.blockSize) {
+            context.beginPath();
+            context.moveTo(x, 0);
+            context.lineTo(x, state.options.sceneHeight);
+            context.stroke();
+        }
+
+        for (let y = 0; y <= state.options.sceneHeight; y += state.options.blockSize) {
+            context.beginPath();
+            context.moveTo(0, y);
+            context.lineTo(state.options.sceneWidth, y);
+            context.stroke();
+        }
+
+        context.restore();
     }
 
 }

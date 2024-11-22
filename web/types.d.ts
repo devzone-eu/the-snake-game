@@ -17,6 +17,7 @@ declare global {
             x: number,
             y: number,
         },
+        debug: boolean,
     }
 
     type Scene = {
