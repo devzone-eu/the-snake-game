@@ -3,6 +3,7 @@ import Multiplayer from "./user_interface/multiplayer.js";
 import NewGame from "./user_interface/new_game.js";
 import Settings from "./user_interface/settings.js";
 import { Vector } from "./math.js";
+import Direction from "../helper/direction.js";
 
 /**
  * @param {Options} options
@@ -39,7 +40,8 @@ export function setupGameState(options) {
 
             throw Error("Active scene `" + this.activeScene + "` was not found in registry.");
         },
-        currentDirection: "none",
+        currentDirection: new Direction(0, 0, "none"),
         snakePosition: snakePosition,
+        inputQueue: [],
     };
 }

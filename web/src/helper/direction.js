@@ -8,7 +8,7 @@ export default class Direction {
      * @param { string } direction
      */
     constructor(x, y, direction) {
-        const allowedDirections = ["left", "right", "up", "down"];
+        const allowedDirections = ["left", "right", "up", "down", "none"];
 
         assert(typeof x === "number", "Invalid value specified", {"x": x});
         assert(typeof y === "number", "Invalid value specified", {"y": y});

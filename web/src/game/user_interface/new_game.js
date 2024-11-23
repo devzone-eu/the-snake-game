@@ -9,6 +9,13 @@ const DIRECTION_DOWN = "down";
 const DIRECTION_LEFT = "left";
 const DIRECTION_RIGHT = "right";
 
+const OPPOSITE_DIRECTIONS = {
+    [DIRECTION_UP]: DIRECTION_DOWN,
+    [DIRECTION_DOWN]: DIRECTION_UP,
+    [DIRECTION_LEFT]: DIRECTION_RIGHT,
+    [DIRECTION_RIGHT]: DIRECTION_LEFT,
+};
+
 export default class NewGame extends Scene {
 
     /** @type {function(KeyboardEvent): void} */
@@ -17,12 +24,15 @@ export default class NewGame extends Scene {
     /** @type {Vector | null} */
     _appleCoordinates = null
 
+    /** @type {Number | null} */
+    _tickId = null
+
     /**
      * @param {HTMLCanvasElement} canvas
      * @param {State} state
      */
     drawUserInterface(canvas, state) {
-        assert(state.currentDirection === "none", "Current direction should be `none` when the game is started for the first time");
+        assert(state.currentDirection.getDirection() === "none", "Current direction should be `none` when the game is started for the first time");
         assert(state.snakePosition.length > 0, "The initial position of the snake should be configured before the game is started");
 
         const context = canvas.getContext("2d");
@@ -54,13 +64,6 @@ export default class NewGame extends Scene {
             "ArrowRight":   new Direction(state.options.blockSize, 0, DIRECTION_RIGHT),
         };
 
-        const oppositeDirections = {
-            [DIRECTION_UP]: DIRECTION_DOWN,
-            [DIRECTION_DOWN]: DIRECTION_UP,
-            [DIRECTION_LEFT]: DIRECTION_RIGHT,
-            [DIRECTION_RIGHT]: DIRECTION_LEFT,
-        };
-
         const context = canvas.getContext("2d");
 
         this._keydownListener = (e) => {
@@ -68,15 +71,44 @@ export default class NewGame extends Scene {
                 /** @type Direction */
                 let direction = directionsMapping[e.key];
 
-                if (state.currentDirection === oppositeDirections[direction.getDirection()]) {
+                if (state.currentDirection.getDirection() === OPPOSITE_DIRECTIONS[direction.getDirection()]) {
                     return;
                 }
 
-                this._move(direction, context, state);
+                state.currentDirection = direction;
+
+                const lastDirectionInQueue = state.inputQueue[state.inputQueue.length - 1] || direction;
+
+                if (lastDirectionInQueue.getDirection() !== OPPOSITE_DIRECTIONS[direction.getDirection()]) {
+                    state.inputQueue.push(direction);
+                }
             }
         };
 
         window.addEventListener("keydown", this._keydownListener);
+
+        this._tickId = window.setInterval(() => this._tick(context, state), state.options.refreshInterval);
+    }
+
+    /**
+     * @param {CanvasRenderingContext2D} context
+     * @param {State} state
+     * @private
+     */
+    _tick(context, state) {
+        if (state.currentDirection.getDirection() === "none") {
+            return;
+        }
+
+        if (state.inputQueue.length > 0) {
+            const nextDirection = state.inputQueue.shift();
+
+            if (nextDirection.getDirection() !== OPPOSITE_DIRECTIONS[state.currentDirection.getDirection()]) {
+                state.currentDirection = nextDirection;
+            }
+        }
+
+        this._move(state.currentDirection, context, state);
     }
 
     /**
@@ -123,11 +155,20 @@ export default class NewGame extends Scene {
      * @private
      */
     _move(direction, context, state) {
+        /**
+         * @TODO:
+         *  - Collision detection - currently the snake can go through itself, fantastic.
+         *  - Add an option to increase difficulty
+         *      - Movement (speed) could be increased via settings.
+         *      - Allow boundaries to be crossed on easy, and enable wall collision on hard.
+         *  - Apple random coordinates calculations should be improved, because the apple can be spawn right on top of the snake, incredible.
+         */
+
         let head = state.snakePosition[0];
 
         assert(head instanceof Vector, "Invalid type provided for snake head position", {"head": head});
 
-        state.currentDirection = direction.getDirection();
+        state.currentDirection = direction;
 
         let position = this._calculateCoordinatesForBoundaries(
             head,

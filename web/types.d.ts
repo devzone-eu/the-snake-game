@@ -1,4 +1,5 @@
 import { Vector } from "./src/game/math.js";
+import Direction from "./src/helper/direction.js";
 
 export {};
 
@@ -17,6 +18,7 @@ declare global {
             x: number,
             y: number,
         },
+        refreshInterval: number,
         debug: boolean,
     }
 
@@ -41,8 +43,9 @@ declare global {
         options: Options,
         scenes: Array<Scene>,
         activeScene: string,
-        currentDirection: string,
+        currentDirection: Direction,
         snakePosition: Array<Vector> | null,
+        inputQueue: Array<Direction>,
 
         getActiveScene(): Scene,
     }

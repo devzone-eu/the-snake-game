@@ -19,6 +19,7 @@ const options = {
         x: 360,
         y: 200,
     },
+    refreshInterval: 100,
     debug: false,
 };
 
