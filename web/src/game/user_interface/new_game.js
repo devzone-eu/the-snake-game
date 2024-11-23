@@ -24,8 +24,23 @@ export default class NewGame extends Scene {
     /** @type {Vector | null} */
     _appleCoordinates = null
 
+    /** @type {HTMLImageElement | null} */
+    _appleImage = null
+
     /** @type {Number | null} */
     _tickId = null
+
+    /**
+     * @param {string} title
+     * @param {string} key
+     * @param {boolean} dedicated
+     */
+    constructor(title, key, dedicated) {
+        super(title, key, dedicated);
+
+        this._appleImage = new Image();
+        this._appleImage.src = "/assets/images/apple.png";
+    }
 
     /**
      * @param {HTMLCanvasElement} canvas
@@ -141,11 +156,11 @@ export default class NewGame extends Scene {
             this._appleCoordinates = new Vector(randomX, randomY);
         }
 
-        context.beginPath();
-        context.fillStyle = options.colors.apple;
-        context.rect(this._appleCoordinates.getX(), this._appleCoordinates.getY(), options.blockSize, options.blockSize);
-        context.fill();
-        context.closePath();
+        context.drawImage(
+            this._appleImage,
+            this._appleCoordinates.getX(),
+            this._appleCoordinates.getY()
+        );
     }
 
     /**
