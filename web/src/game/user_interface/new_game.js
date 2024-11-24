@@ -30,6 +30,12 @@ export default class NewGame extends Scene {
     /** @type {Number | null} */
     _tickId = null
 
+    /** @type {Set} */
+    _snakeCoordinates
+
+    /** @type {boolean} */
+    _gameOver = false
+
     /**
      * @param {string} title
      * @param {string} key
@@ -40,6 +46,8 @@ export default class NewGame extends Scene {
 
         this._appleImage = new Image();
         this._appleImage.src = "/assets/images/apple.png";
+
+        this._snakeCoordinates = new Set();
     }
 
     /**
@@ -54,17 +62,6 @@ export default class NewGame extends Scene {
         this._drawSnake(context, state);
         this._drawApple(context, state);
         this._drawDebugGrid(context, state);
-
-        eventBus.subscribe("positionChanged", /**
-            @param {CanvasRenderingContext2D} context
-            @param {State} state
-            */
-            (context, state) => {
-                this._drawSnake(context, state);
-                this._drawApple(context, state);
-                this._drawDebugGrid(context, state);
-            }
-        );
     }
 
     /**
@@ -72,6 +69,44 @@ export default class NewGame extends Scene {
      * @param {State} state
      */
     attachEventListeners(canvas, state) {
+        eventBus.subscribe("positionChanged", /**
+             @param {CanvasRenderingContext2D} context
+             @param {State} state
+             */
+            (context, state) => {
+                this._storeSnakeCoordinates(state);
+                this._drawSnake(context, state);
+                this._drawApple(context, state);
+                this._drawDebugGrid(context, state);
+            }
+        );
+
+        eventBus.subscribe("gameOver", /**
+            @param {CanvasRenderingContext2D} context
+            @param {State} state
+            */
+            (context, state) => {
+                this._gameOver = true;
+
+                state.currentDirection = new Direction(0, 0, "none");
+
+                const startX = (15 * state.options.sceneWidth) / 100;
+                const startY = (15 * state.options.sceneHeight) / 100;
+
+                context.clearRect(0, 0, state.options.sceneWidth, state.options.sceneHeight);
+                context.fillStyle = 'rgba(225, 225, 225, 0.5)';
+                context.fillRect(startX, startY, state.options.sceneWidth - startX * 2, state.options.sceneHeight - startY * 2);
+
+                context.font = "3.5em Jungle Adventurer";
+                context.textAlign = "center";
+                context.fillStyle = "#333";
+                context.fillText("Game Over", state.options.sceneWidth / 2, state.options.sceneHeight / 2);
+
+                window.clearInterval(this._tickId);
+                window.removeEventListener("keydown", this._keydownListener);
+            }
+        );
+
         const directionsMapping = {
             "ArrowUp":      new Direction(0, -state.options.blockSize, DIRECTION_UP),
             "ArrowDown":    new Direction(0, state.options.blockSize, DIRECTION_DOWN),
@@ -111,7 +146,7 @@ export default class NewGame extends Scene {
      * @private
      */
     _tick(context, state) {
-        if (state.currentDirection.getDirection() === "none") {
+        if (state.currentDirection.getDirection() === "none" || this._gameOver) {
             return;
         }
 
@@ -177,11 +212,12 @@ export default class NewGame extends Scene {
     _move(direction, context, state) {
         /**
          * @TODO:
-         *  - Collision detection - currently the snake can go through itself, fantastic.
          *  - Add an option to increase difficulty
          *      - Movement (speed) could be increased via settings.
          *      - Allow boundaries to be crossed on easy, and enable wall collision on hard.
          */
+
+        assert(!this._gameOver, "The game is over, start a new one");
 
         let head = state.snakePosition[0];
 
@@ -196,6 +232,14 @@ export default class NewGame extends Scene {
             state.options.sceneHeight,
             state.options.blockSize
         );
+
+        let headNextPositionKey = `${position.getX()}_${position.getY()}`;
+
+        if (this._snakeCoordinates.has(headNextPositionKey)) {
+            eventBus.publish("gameOver", context, state);
+
+            return;
+        }
 
         state.snakePosition.unshift(position);
 
@@ -234,6 +278,24 @@ export default class NewGame extends Scene {
         }
 
         return new Vector(nextX, nextY);
+    }
+
+    /**
+     * @param {State} state
+     * @private
+     */
+    _storeSnakeCoordinates(state) {
+        this._snakeCoordinates.clear();
+
+        for (let [index, position] of state.snakePosition.entries()) {
+            if (index === 0) {
+                continue;
+            }
+
+            let key = `${position.getX()}_${position.getY()}`;
+
+            this._snakeCoordinates.add(key);
+        }
     }
 
     /**
