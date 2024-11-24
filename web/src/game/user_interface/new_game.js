@@ -159,7 +159,6 @@ export default class NewGame extends Scene {
             } while (overlapping.length > 0);
 
             this._appleCoordinates = randomCoordinates;
-            console.log(randomCoordinates);
         }
 
         context.drawImage(
