@@ -86,7 +86,7 @@ export default class Scene {
 
         context.font = "3em Jungle Adventurer";
         context.textAlign = "center";
-        context.fillStyle = "#afafaf";
+        context.fillStyle = "#666";
         context.fillText(title, x, y);
     }
 
