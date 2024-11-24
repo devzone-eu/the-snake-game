@@ -12,6 +12,19 @@ export class Vector {
     }
 
     /**
+     * @param {Number} maxWidth
+     * @param {Number} maxHeight
+     * @param {Number} blockSize
+     * @returns {Vector}
+     */
+    static random(maxWidth, maxHeight, blockSize) {
+        const randomX = Math.floor(Math.random() * (maxWidth / blockSize)) * blockSize;
+        const randomY = Math.floor(Math.random() * (maxHeight / blockSize)) * blockSize;
+
+        return new Vector(randomX, randomY);
+    }
+
+    /**
      * @param {Vector} vector
      * @returns {Vector}
      */

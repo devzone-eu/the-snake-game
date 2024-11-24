@@ -52,7 +52,7 @@ export default class NewGame extends Scene {
 
         const context = canvas.getContext("2d");
         this._drawSnake(context, state);
-        this._drawApple(context, state.options);
+        this._drawApple(context, state);
         this._drawDebugGrid(context, state);
 
         eventBus.subscribe("positionChanged", /**
@@ -61,7 +61,7 @@ export default class NewGame extends Scene {
             */
             (context, state) => {
                 this._drawSnake(context, state);
-                this._drawApple(context, state.options);
+                this._drawApple(context, state);
                 this._drawDebugGrid(context, state);
             }
         );
@@ -145,15 +145,21 @@ export default class NewGame extends Scene {
 
     /**
      * @param {CanvasRenderingContext2D} context
-     * @param {Options} options
+     * @param {State} state
      * @private
      */
-    _drawApple(context, options) {
+    _drawApple(context, state) {
         if (this._appleCoordinates === null) {
-            const randomX = Math.floor(Math.random() * (options.sceneWidth / options.blockSize)) * options.blockSize;
-            const randomY = Math.floor(Math.random() * (options.sceneHeight / options.blockSize)) * options.blockSize;
+            let overlapping;
+            let randomCoordinates;
 
-            this._appleCoordinates = new Vector(randomX, randomY);
+            do {
+                randomCoordinates = Vector.random(state.options.sceneWidth, state.options.sceneHeight, state.options.blockSize);
+                overlapping = state.snakePosition.filter(vector => vector.getX() === randomCoordinates.getX() && vector.getY() === randomCoordinates.getY());
+            } while (overlapping.length > 0);
+
+            this._appleCoordinates = randomCoordinates;
+            console.log(randomCoordinates);
         }
 
         context.drawImage(
@@ -176,7 +182,6 @@ export default class NewGame extends Scene {
          *  - Add an option to increase difficulty
          *      - Movement (speed) could be increased via settings.
          *      - Allow boundaries to be crossed on easy, and enable wall collision on hard.
-         *  - Apple random coordinates calculations should be improved, because the apple can be spawn right on top of the snake, incredible.
          */
 
         let head = state.snakePosition[0];
