@@ -1,6 +1,6 @@
 import Scene from "../scene.js";
-import { assert } from "../../helper/assert.js";
-import { Vector } from "../math.js";
+import {assert} from "../../helper/assert.js";
+import {Vector} from "../math.js";
 import eventBus from "../../event/event_bus.js";
 import Direction from "../../helper/direction.js";
 
@@ -36,6 +36,12 @@ export default class NewGame extends Scene {
     /** @type {boolean} */
     _gameOver = false
 
+    /** @type {Number} */
+    _score = 0
+
+    /** @type {Number | null} */
+    _startAt = null
+
     /**
      * @param {string} title
      * @param {string} key
@@ -59,6 +65,7 @@ export default class NewGame extends Scene {
         assert(state.snakePosition.length > 0, "The initial position of the snake should be configured before the game is started");
 
         const context = canvas.getContext("2d");
+        this._drawMetadata(state);
         this._drawSnake(context, state);
         this._drawApple(context, state);
         this._drawDebugGrid(context, state);
@@ -74,6 +81,37 @@ export default class NewGame extends Scene {
              @param {State} state
              */
             (context, state) => {
+                if (this._appleCoordinates === null && !this._gameOver) {
+                    ++this._score;
+
+                    document.getElementById('score').textContent = this._score.toString();
+                }
+
+                if (this._tickId !== null && this._startAt === null) {
+                    this._startAt = performance.now();
+
+                    const padZero = (/** @type {Number} */ value, /** @type {Number} */ repetitions = 2) => `${value}`.padStart(repetitions, "0");
+                    const formatTime = function(/** @type {Number} */time) {
+                        const hours = padZero(Math.floor(time / (60 * 60000)));
+                        const minutes = padZero(Math.floor(time / 60000));
+                        const seconds = padZero(Math.floor(time / 1000));
+
+                        return `${hours}:${minutes}:${seconds}`;
+                    };
+
+                    const calculateTime = (function() {
+                        if (this._gameOver) {
+                            return;
+                        }
+
+                        document.getElementById('time').textContent = formatTime(performance.now() - this._startAt);
+
+                        setTimeout(calculateTime, 1000);
+                    }).bind(this);
+
+                    calculateTime();
+                }
+
                 this._storeSnakeCoordinates(state);
                 this._drawSnake(context, state);
                 this._drawApple(context, state);
@@ -87,6 +125,7 @@ export default class NewGame extends Scene {
             */
             (context, state) => {
                 this._gameOver = true;
+                state.options.debug = false;
 
                 state.currentDirection = new Direction(0, 0, "none");
 
@@ -100,7 +139,7 @@ export default class NewGame extends Scene {
                 context.font = "3.5em Jungle Adventurer";
                 context.textAlign = "center";
                 context.fillStyle = "#333";
-                context.fillText("Game Over", state.options.sceneWidth / 2, state.options.sceneHeight / 2);
+                context.fillText("Game Over", state.options.sceneWidth / 2, state.options.sceneHeight / 3);
 
                 window.clearInterval(this._tickId);
                 window.removeEventListener("keydown", this._keydownListener);
@@ -138,6 +177,19 @@ export default class NewGame extends Scene {
         window.addEventListener("keydown", this._keydownListener);
 
         this._tickId = window.setInterval(() => this._tick(context, state), state.options.refreshInterval);
+    }
+
+    /**
+     * @param {State} state
+     * @private
+     */
+    _drawMetadata(state) {
+        const metadata = document.createElement('div');
+
+        metadata.classList.add('game-metadata');
+        metadata.innerHTML = 'Apples Eaten: <span id="score">0</span> / Time Elapsed <span id="time">00:00:00</span>';
+
+        document.body.prepend(metadata);
     }
 
     /**

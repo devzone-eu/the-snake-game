@@ -9,10 +9,12 @@
 body {
     margin: 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #ffddc1;
+    gap: 10px; /* Adds space between .game-metadata and .container */
 }
 
 canvas {
@@ -31,6 +33,16 @@ canvas {
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     padding: 5px;
+}
+
+.game-metadata {
+    width: 640px;
+    height: 20px;
+    box-shadow: 0 4px 12px rgba(168, 168, 168, 0.3);
+    padding: 10px 5px;
+    font-family: 'Jungle Adventurer', serif;
+    font-size: 20px;
+    color: #999;
 }
 
 body.dark .container {
