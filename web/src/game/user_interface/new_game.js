@@ -92,9 +92,9 @@ export default class NewGame extends Scene {
 
                     const padZero = (/** @type {Number} */ value, /** @type {Number} */ repetitions = 2) => `${value}`.padStart(repetitions, "0");
                     const formatTime = function(/** @type {Number} */time) {
-                        const hours = padZero(Math.floor(time / (60 * 60000)));
-                        const minutes = padZero(Math.floor(time / 60000));
-                        const seconds = padZero(Math.floor(time / 1000));
+                        const hours = padZero(Math.floor(time / (60 * 60 * 1000)));
+                        const minutes = padZero(Math.floor((time % (60 * 60 * 1000)) / (60 * 1000)));
+                        const seconds = padZero(Math.floor((time % (60 * 1000)) / 1000));
 
                         return `${hours}:${minutes}:${seconds}`;
                     };
