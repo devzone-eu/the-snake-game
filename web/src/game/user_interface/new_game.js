@@ -3,6 +3,7 @@ import {assert} from "../../helper/assert.js";
 import {Vector} from "../math.js";
 import eventBus from "../../event/event_bus.js";
 import Direction from "../../helper/direction.js";
+import { formatTime } from "../../helper/utils.js";
 
 const DIRECTION_UP = "up";
 const DIRECTION_DOWN = "down";
@@ -76,6 +77,24 @@ export default class NewGame extends Scene {
      * @param {State} state
      */
     attachEventListeners(canvas, state) {
+        eventBus.subscribe("positionChanged", () => {
+            if (this._tickId !== null && this._startAt === null) {
+                this._startAt = performance.now();
+
+                const calculateTime = (function() {
+                    if (this._gameOver) {
+                        return;
+                    }
+
+                    document.getElementById('time').textContent = formatTime(performance.now() - this._startAt);
+
+                    setTimeout(calculateTime, 1000);
+                }).bind(this);
+
+                calculateTime();
+            }
+        });
+
         eventBus.subscribe("positionChanged", /**
              @param {CanvasRenderingContext2D} context
              @param {State} state
@@ -85,31 +104,6 @@ export default class NewGame extends Scene {
                     ++this._score;
 
                     document.getElementById('score').textContent = this._score.toString();
-                }
-
-                if (this._tickId !== null && this._startAt === null) {
-                    this._startAt = performance.now();
-
-                    const padZero = (/** @type {Number} */ value, /** @type {Number} */ repetitions = 2) => `${value}`.padStart(repetitions, "0");
-                    const formatTime = function(/** @type {Number} */time) {
-                        const hours = padZero(Math.floor(time / (60 * 60 * 1000)));
-                        const minutes = padZero(Math.floor((time % (60 * 60 * 1000)) / (60 * 1000)));
-                        const seconds = padZero(Math.floor((time % (60 * 1000)) / 1000));
-
-                        return `${hours}:${minutes}:${seconds}`;
-                    };
-
-                    const calculateTime = (function() {
-                        if (this._gameOver) {
-                            return;
-                        }
-
-                        document.getElementById('time').textContent = formatTime(performance.now() - this._startAt);
-
-                        setTimeout(calculateTime, 1000);
-                    }).bind(this);
-
-                    calculateTime();
                 }
 
                 this._storeSnakeCoordinates(state);
